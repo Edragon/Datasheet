@@ -1,0 +1,15 @@
+测试程序功能
+开机显示中文，英文，图片
+
+修改LCD数据脚连接IO在lcd.h文件中
+40*40图片数据和95个ASCCII字符数据和测试汉字取模数据在font.c文件中
+
+/* 
+程序默认IO连接方式：
+sbit LCD_CS     =P0^0;     //片选	
+sbit LCD_AO     =P0^2;	  //数据/命令切换
+sbit LCD_SDA    =P1^5;	  //数据
+sbit LCD_SCK    =P1^7;	  //时钟
+sbit LCD_REST   =P0^1;	  //复位  
+*/
+

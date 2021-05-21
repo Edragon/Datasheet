@@ -1,0 +1,3 @@
+"push-pull-test.obj" 
+TO "push-pull-output" 
+RAMSIZE(256) 

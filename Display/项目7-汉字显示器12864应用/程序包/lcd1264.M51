@@ -1,0 +1,324 @@
+BL51 BANKED LINKER/LOCATER V6.00                                                        11/07/2010  19:45:10  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.00, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE 12864.obj TO lcd1264
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  12864.obj (12864)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?OFFXADD)
+
+
+LINK MAP OF MODULE:  lcd1264 (12864)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000AH     UNIT         _DATA_GROUP_
+            DATA    0012H     0002H     UNIT         ?DT?12864
+            IDATA   0014H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     03E2H     UNIT         ?CO?12864
+            CODE    03E5H     0068H     UNIT         ?PR?_DPRINTF_HANZI_STRING_1?12864
+            CODE    044DH     003EH     UNIT         ?PR?F12864_INIT?12864
+            CODE    048BH     003CH     UNIT         ?PR?MAIN?12864
+            CODE    04C7H     0039H     UNIT         ?PR?_DISPLAY_STRING?12864
+            CODE    0500H     0030H     UNIT         ?PR?_WRITE_DC?12864
+            CODE    0530H     002DH     UNIT         ?PR?F12864_CLEAR?12864
+            CODE    055DH     0025H     UNIT         ?C?LIB_CODE
+            CODE    0582H     0024H     UNIT         ?PR?_GOTO_XY?12864
+            CODE    05A6H     0013H     UNIT         ?PR?_WRITE_DDC?12864
+            CODE    05B9H     0012H     UNIT         ?PR?_WRITE_COMMOND?12864
+            CODE    05CBH     0012H     UNIT         ?PR?_WRITE_DATE?12864
+            CODE    05DDH     0010H     UNIT         ?PR?_PUTCHAR?12864
+            CODE    05EDH     000CH     UNIT         ?PR?_DELAY_NMS?12864
+            CODE    05F9H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   lcd1264 (12864)
+
+
+SEGMENT                                     DATA_GROUP 
+  +--> CALLED SEGMENT                     START    LENGTH
+---------------------------------------------------------
+?C_C51STARTUP                             -----    -----
+  +--> ?PR?MAIN?12864
+
+?PR?MAIN?12864                            -----    -----
+  +--> ?PR?F12864_INIT?12864
+  +--> ?PR?F12864_CLEAR?12864
+BL51 BANKED LINKER/LOCATER V6.00                                                      11/07/2010  19:45:10  PAGE 2
+
+
+  +--> ?CO?12864
+  +--> ?PR?_DPRINTF_HANZI_STRING_1?12864
+  +--> ?PR?_DISPLAY_STRING?12864
+
+?PR?F12864_INIT?12864                     -----    -----
+  +--> ?PR?_DELAY_NMS?12864
+  +--> ?PR?_WRITE_DDC?12864
+  +--> ?PR?_WRITE_COMMOND?12864
+
+?PR?_WRITE_DDC?12864                      -----    -----
+  +--> ?PR?_WRITE_DATE?12864
+  +--> ?PR?_WRITE_COMMOND?12864
+
+?PR?F12864_CLEAR?12864                    -----    -----
+  +--> ?PR?_WRITE_DDC?12864
+  +--> ?PR?_WRITE_COMMOND?12864
+  +--> ?PR?_WRITE_DATE?12864
+
+?PR?_DPRINTF_HANZI_STRING_1?12864         0008H    000AH
+  +--> ?PR?_WRITE_DDC?12864
+  +--> ?PR?_WRITE_DC?12864
+
+?PR?_WRITE_DC?12864                       -----    -----
+  +--> ?PR?_WRITE_DATE?12864
+  +--> ?PR?_WRITE_COMMOND?12864
+
+?PR?_DISPLAY_STRING?12864                 0008H    0005H
+  +--> ?PR?_PUTCHAR?12864
+
+?PR?_PUTCHAR?12864                        -----    -----
+  +--> ?PR?_GOTO_XY?12864
+  +--> ?PR?_WRITE_DC?12864
+
+?PR?_GOTO_XY?12864                        -----    -----
+  +--> ?PR?_WRITE_DDC?12864
+
+
+
+SYMBOL TABLE OF MODULE:  lcd1264 (12864)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        12864
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:00A0H         PUBLIC        P2
+  B:00A0H.4       PUBLIC        W_R
+  C:05CBH         PUBLIC        _write_date
+  D:0012H         PUBLIC        sadsa
+  C:05A6H         PUBLIC        _write_ddc
+  C:05EDH         PUBLIC        _delay_nms
+  C:048BH         PUBLIC        main
+  C:0522H         PUBLIC        _write_dc
+  C:0530H         PUBLIC        F12864_clear
+  C:05DDH         PUBLIC        _Putchar
+  B:00A0H.0       PUBLIC        REST
+BL51 BANKED LINKER/LOCATER V6.00                                                      11/07/2010  19:45:10  PAGE 3
+
+
+  C:000BH         PUBLIC        GB_16
+  C:04C7H         PUBLIC        _display_string
+  C:05B9H         PUBLIC        _write_commond
+  C:044DH         PUBLIC        F12864_init
+  C:03E5H         PUBLIC        _dprintf_hanzi_string_1
+  B:00A0H.1       PUBLIC        C_D
+  B:00A0H.2       PUBLIC        C_E
+  C:0582H         PUBLIC        _goto_xy
+  B:00A0H.3       PUBLIC        R_D
+  -------         PROC          _DELAY_NMS
+  D:0006H         SYMBOL        i
+  C:05EDH         LINE#         31
+  C:05EDH         LINE#         32
+  C:05EDH         LINE#         33
+  C:05F1H         LINE#         34
+  C:05F8H         LINE#         35
+  -------         ENDPROC       _DELAY_NMS
+  -------         PROC          _WRITE_COMMOND
+  D:0007H         SYMBOL        com
+  C:05B9H         LINE#         36
+  C:05B9H         LINE#         37
+  C:05B9H         LINE#         38
+  C:05BBH         LINE#         39
+  C:05BDH         LINE#         40
+  C:05BFH         LINE#         41
+  C:05C1H         LINE#         42
+  C:05C3H         LINE#         43
+  C:05C4H         LINE#         44
+  C:05C6H         LINE#         45
+  C:05C8H         LINE#         46
+  C:05CAH         LINE#         48
+  -------         ENDPROC       _WRITE_COMMOND
+  -------         PROC          _WRITE_DATE
+  D:0007H         SYMBOL        dat
+  C:05CBH         LINE#         51
+  C:05CBH         LINE#         52
+  C:05CBH         LINE#         53
+  C:05CDH         LINE#         54
+  C:05CFH         LINE#         55
+  C:05D1H         LINE#         56
+  C:05D3H         LINE#         57
+  C:05D5H         LINE#         58
+  C:05D6H         LINE#         59
+  C:05D8H         LINE#         60
+  C:05DAH         LINE#         61
+  C:05DCH         LINE#         62
+  -------         ENDPROC       _WRITE_DATE
+  -------         PROC          L?0032
+  -------         ENDPROC       L?0032
+  -------         PROC          _WRITE_DC
+  D:0005H         SYMBOL        com
+  D:0006H         SYMBOL        dat
+  C:0522H         LINE#         63
+  C:0526H         LINE#         64
+  C:0526H         LINE#         65
+  C:052BH         LINE#         66
+  -------         ENDPROC       _WRITE_DC
+BL51 BANKED LINKER/LOCATER V6.00                                                      11/07/2010  19:45:10  PAGE 4
+
+
+  -------         PROC          _WRITE_DDC
+  D:0006H         SYMBOL        com
+  D:0007H         SYMBOL        dat1
+  D:0004H         SYMBOL        dat2
+  C:05A6H         LINE#         70
+  C:05ACH         LINE#         71
+  C:05ACH         LINE#         72
+  C:05AFH         LINE#         73
+  C:05B4H         LINE#         74
+  -------         ENDPROC       _WRITE_DDC
+  -------         PROC          F12864_INIT
+  C:044DH         LINE#         78
+  C:044DH         LINE#         79
+  C:044DH         LINE#         80
+  C:044FH         LINE#         81
+  C:0456H         LINE#         82
+  C:0458H         LINE#         83
+  C:0460H         LINE#         84
+  C:0467H         LINE#         85
+  C:046FH         LINE#         86
+  C:0477H         LINE#         87
+  C:047CH         LINE#         88
+  C:0481H         LINE#         89
+  C:0486H         LINE#         90
+  -------         ENDPROC       F12864_INIT
+  -------         PROC          F12864_CLEAR
+  -------         DO            
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:0530H         LINE#         95
+  C:0530H         LINE#         96
+  C:0530H         LINE#         98
+  C:0538H         LINE#         99
+  C:053DH         LINE#         100
+  C:0550H         LINE#         101
+  C:0555H         LINE#         102
+  -------         ENDPROC       F12864_CLEAR
+  -------         PROC          _GOTO_XY
+  D:0004H         SYMBOL        x
+  D:0005H         SYMBOL        y
+  D:0001H         SYMBOL        mode
+  -------         DO            
+  D:0006H         SYMBOL        temp
+  -------         ENDDO         
+  C:0582H         LINE#         107
+  C:0584H         LINE#         108
+  C:0584H         LINE#         110
+  C:0593H         LINE#         111
+  C:0596H         LINE#         112
+  C:0596H         LINE#         113
+  C:059DH         LINE#         114
+  C:059DH         LINE#         115
+  -------         ENDPROC       _GOTO_XY
+  -------         PROC          _PUTCHAR
+  D:0007H         SYMBOL        x
+  D:0005H         SYMBOL        y
+  D:0002H         SYMBOL        Charbyte
+BL51 BANKED LINKER/LOCATER V6.00                                                      11/07/2010  19:45:10  PAGE 5
+
+
+  C:05DDH         LINE#         119
+  C:05DFH         LINE#         120
+  C:05DFH         LINE#         121
+  C:05E4H         LINE#         122
+  -------         ENDPROC       _PUTCHAR
+  -------         PROC          _DISPLAY_STRING
+  D:0008H         SYMBOL        x
+  D:0009H         SYMBOL        y
+  D:000AH         SYMBOL        p
+  C:04C7H         LINE#         126
+  C:04D1H         LINE#         127
+  C:04D1H         LINE#         128
+  C:04DDH         LINE#         129
+  C:04DDH         LINE#         130
+  C:04E4H         LINE#         131
+  C:04E4H         LINE#         132
+  C:04E7H         LINE#         133
+  C:04E9H         LINE#         134
+  C:04E9H         LINE#         135
+  C:04F0H         LINE#         136
+  C:04F2H         LINE#         137
+  C:04FDH         LINE#         138
+  C:04FFH         LINE#         139
+  -------         ENDPROC       _DISPLAY_STRING
+  -------         PROC          _DPRINTF_HANZI_STRING_1
+  D:0008H         SYMBOL        GB_16
+  D:000AH         SYMBOL        X_pos
+  D:000CH         SYMBOL        Y_pos
+  D:000EH         SYMBOL        j
+  D:000FH         SYMBOL        k
+  -------         DO            
+  D:0010H         SYMBOL        address
+  D:0001H         SYMBOL        m
+  D:0002H         SYMBOL        n
+  -------         ENDDO         
+  C:03E5H         LINE#         144
+  C:03F1H         LINE#         145
+  C:03F1H         LINE#         149
+  C:03F8H         LINE#         150
+  C:03F8H         LINE#         152
+  C:03FAH         LINE#         153
+  C:041BH         LINE#         154
+  C:041DH         LINE#         155
+  C:041DH         LINE#         156
+  C:0427H         LINE#         157
+  C:042AH         LINE#         158
+  C:042DH         LINE#         160
+  C:0438H         LINE#         161
+  C:043CH         LINE#         163
+  C:0447H         LINE#         164
+  C:0449H         LINE#         165
+  C:044CH         LINE#         166
+  -------         ENDPROC       _DPRINTF_HANZI_STRING_1
+  -------         PROC          MAIN
+  C:048BH         LINE#         168
+  C:048BH         LINE#         169
+  C:048BH         LINE#         171
+BL51 BANKED LINKER/LOCATER V6.00                                                      11/07/2010  19:45:10  PAGE 6
+
+
+  C:048EH         LINE#         172
+  C:0491H         LINE#         173
+  C:0491H         LINE#         174
+  C:0491H         LINE#         175
+  C:04A3H         LINE#         177
+  C:04B8H         LINE#         179
+  C:04C5H         LINE#         181
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        12864
+
+  -------         MODULE        ?C?CLDPTR
+  C:055DH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?OFFXADD
+  C:0576H         PUBLIC        ?C?OFFXADD
+  -------         ENDMOD        ?C?OFFXADD
+
+Program Size: data=21.0 xdata=0 code=1541
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

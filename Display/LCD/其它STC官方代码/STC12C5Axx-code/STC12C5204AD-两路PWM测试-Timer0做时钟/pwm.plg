@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\例程\STC12C5A60S2\STC12C5204AD-两路PWM测试-Timer0做时钟\pwm.uv2
+Project File Date:  12/24/2010
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling pwm.c...
+linking...
+Program Size: data=9.0 xdata=0 code=82
+creating hex file from "pwm"...
+"pwm" - 0 Error(s), 0 Warning(s).

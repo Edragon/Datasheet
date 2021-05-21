@@ -1,0 +1,211 @@
+C51 COMPILER V8.02   12864                                                                 11/07/2010 19:45:10 PAGE 1   
+
+
+C51 COMPILER V8.02, COMPILATION OF MODULE 12864
+OBJECT MODULE PLACED IN 12864.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 12864.c BROWSE DEBUG OBJECTEXTEND TABS(3)
+
+line level    source
+
+   1          /*************************************************************/
+   2          
+   3          #include<reg51.h>
+   4          #include<ziku.c>
+   5          //#include <stdio.h>
+   6          #include <absacc.h>
+   7          #include <intrins.h>
+   8          #define uchar unsigned char
+   9          #define uint unsigned int
+  10          
+  11          
+  12          /**************************************************************
+  13          *12864液晶的定义（T6963驱动）                        *
+  14          ***************************************************************/
+  15          sbit REST = P2^0;           //Reset signal, active"L"
+  16          sbit C_D = P2^1;              //L:data   H:code
+  17          sbit C_E = P2^2;              //Chip enable signal, active"L"
+  18          sbit R_D = P2^3;              //read signal, active"L"
+  19          sbit W_R = P2^4;              //write signal, active"L"
+  20          
+  21          
+  22          
+  23          #define width                  15 //显示区宽度
+  24          #define Graphic                 1
+  25          #define TXT                    0
+  26          #define LcmLengthDots            128
+  27          #define LcmWidthDots             64
+  28          
+  29          
+  30          /**************************12864液晶的相关函数**********************/                                   
+  31          void delay_nms(uint i)
+  32          {
+  33   1         while(i)
+  34   1         i--;
+  35   1      }
+  36          void write_commond(uchar com)    //对液晶写一个指令
+  37          {   
+  38   1         C_E = 0; 
+  39   1         C_D = 1;
+  40   1         R_D = 1;
+  41   1         P0 = com;
+  42   1         W_R = 0;       // write   
+  43   1         _nop_();             
+  44   1         W_R = 1;        // disable write
+  45   1         C_E = 1;
+  46   1         C_D = 0;
+  47   1      
+  48   1      }
+  49          int sadsa;
+  50          
+  51          void write_date(uchar dat)   //对液晶写一个数据
+  52          {
+  53   1         C_E = 0;
+  54   1         C_D = 0;
+  55   1         R_D = 1;
+C51 COMPILER V8.02   12864                                                                 11/07/2010 19:45:10 PAGE 2   
+
+  56   1         P0 = dat;
+  57   1         W_R = 0;
+  58   1         _nop_();
+  59   1         W_R = 1;
+  60   1         C_E = 1;
+  61   1         C_D = 1;
+  62   1      }
+  63           void write_dc(uchar com,uchar dat)  //写一个指令和一个数据
+  64          {
+  65   1         write_date(dat);
+  66   1         write_commond(com);
+  67   1      }
+  68          
+  69          //写两个数据和一个指令
+  70          void write_ddc(uchar com,uchar dat1,uchar dat2)
+  71          {
+  72   1         write_date(dat1);
+  73   1         write_date(dat2);
+  74   1         write_commond(com);
+  75   1      }
+  76          
+  77          //LCD初始化函数
+  78          void F12864_init(void)
+  79          {  
+  80   1         REST = 0;
+  81   1         delay_nms(2000);              
+  82   1         REST = 1;
+  83   1         write_ddc(0x40,0x00,0x00);                   //设置文本显示区首地址
+  84   1         write_ddc(0x41,128/8,0x00);                  //设置文本显示区宽度
+  85   1         write_ddc(0x42,0x00,0x08);                   //设置图形显示区首地址0x0800
+  86   1         write_ddc(0x43,128/8,0x00);                  //设置图形显示区宽度
+  87   1         write_commond(0xA0);                         //设置光标形状 8x8方块
+  88   1         write_commond(0x80);                         //显示方式设置 文本and图形(异或)
+  89   1         write_commond(0x92);                         //设置光标
+  90   1         write_commond(0x9F);                         //显示开关设置 文本开,图形开,光标闪烁关                        
+  91   1      
+  92   1      }
+  93          //**************************//清显示存储器函数
+  94          
+  95          void F12864_clear(void)
+  96          {
+  97   1         unsigned int i;
+  98   1         write_ddc(0X24,0x00,0x00);                      //置地址指针为从零开始
+  99   1         write_commond(0xb0);                            //自动写
+ 100   1         for(i = 0;i < 128 * 64 ;i++)write_date(0x00); // 清一屏
+ 101   1         write_commond(0xb2);                            // 自动写结束
+ 102   1         write_ddc(0x24,0x00,0x00);                      // 重置地址指针
+ 103   1        
+ 104   1      }
+ 105          
+ 106          //设定显示的地址
+ 107          void goto_xy(uchar x,uchar y,uchar mode)
+ 108          {
+ 109   1           uint  temp;
+ 110   1           temp = 128 / 8 * y + x;
+ 111   1           if(mode)                                 //mode = 1为Graphic
+ 112   1           {                                        //如果图形模式要加上图形区首地址0x0800
+ 113   2               temp = temp + 0x0100;
+ 114   2           }
+ 115   1           write_ddc(0x24,temp & 0xff,temp / 256);   //地址指针位置
+ 116   1      }
+ 117          
+C51 COMPILER V8.02   12864                                                                 11/07/2010 19:45:10 PAGE 3   
+
+ 118          //显示一个ASCII码函数
+ 119          void Putchar(uchar x,uchar y,uchar Charbyte)
+ 120          {
+ 121   1           goto_xy(x,y,TXT);
+ 122   1           write_dc(0xC4,Charbyte-32);          //数据一次读写方式 //查字符rom
+ 123   1          
+ 124   1      }
+ 125          
+ 126          void display_string(uchar x,uchar y,uchar *p)
+ 127          {
+ 128   1         while(*p != 0)
+ 129   1         {
+ 130   2            if(x > 15 )                          //自动换行  128*64
+ 131   2            {
+ 132   3               x = 0;
+ 133   3               y++;
+ 134   3            }
+ 135   2            Putchar(x,y,*p);
+ 136   2            ++x;
+ 137   2            ++p;
+ 138   2         }
+ 139   1      }
+ 140          
+ 141          
+ 142          
+ 143          //显示一串汉字,j = k + n为(n为要显示的字的个数),k为选择从哪个字开始
+ 144          void dprintf_hanzi_string_1(struct typFNT_GB16 code *GB_16,uint X_pos,uint Y_pos,uchar j,uchar k)
+ 145          {  
+ 146   1         unsigned int address;
+ 147   1         unsigned char m,n;
+ 148   1      
+ 149   1         while(k < j)
+ 150   1         {
+ 151   2            
+ 152   2            m = 0;
+ 153   2            address = LcmLengthDots / 8 * Y_pos + X_pos + 0x0800;
+ 154   2            for(n = 0;n < 16;n++)                                     //计数值16
+ 155   2            {
+ 156   3               write_ddc(0x24,(uchar)(address),(uchar)(address>>8));  //设置显示存储器地址
+ 157   3               write_dc(0xc0,GB_16[k].Mask[m++]);                     //写入汉字字模左部
+ 158   3               write_dc(0xc0,GB_16[k].Mask[m++]);                     //写入汉字字模右部
+ 159   3              
+ 160   3               address = address + 128/8;                           //修改显示存储器地址，显示下一列（共16列）
+ 161   3             }
+ 162   2      
+ 163   2            X_pos += 2;
+ 164   2            k++;
+ 165   2         }
+ 166   1      }
+ 167          
+ 168          void main()
+ 169          {
+ 170   1      
+ 171   1         F12864_init();
+ 172   1         F12864_clear();
+ 173   1         while(1)
+ 174   1         {
+ 175   2            dprintf_hanzi_string_1(GB_16,0,0,10,3);          //带温度传感器的
+ 176   2            //dprintf_hanzi_string_1(GB_16,3,18,15,10);         // 数字示波器
+ 177   2            dprintf_hanzi_string_1(GB_16,1,18,18,15);        //  设计者
+ 178   2      
+ 179   2            display_string(7,3,":2008/5");                        
+C51 COMPILER V8.02   12864                                                                 11/07/2010 19:45:10 PAGE 4   
+
+ 180   2      
+ 181   2         }
+ 182   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    495    ----
+   CONSTANT SIZE    =    994    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2      15
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

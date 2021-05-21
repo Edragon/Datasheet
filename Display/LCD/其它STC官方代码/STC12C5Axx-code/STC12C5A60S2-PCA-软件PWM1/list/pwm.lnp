@@ -1,0 +1,4 @@
+".\list\PWMn.obj",
+".\list\PWMn_main.obj" 
+TO ".\list\pwm" 
+PRINT(".\list\pwm.m51") RAMSIZE(256) 

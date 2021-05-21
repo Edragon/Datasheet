@@ -1,0 +1,5 @@
+"main.obj",
+"TFT.obj" 
+TO "main" 
+RAMSIZE(256) 
+DISABLEWARNING (16) 

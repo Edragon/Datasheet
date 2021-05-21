@@ -1,0 +1,3 @@
+"app_test_xdata.obj" 
+TO "test_xdata" 
+RAMSIZE(256) 

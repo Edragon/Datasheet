@@ -1,0 +1,17 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\例程\STC12C5A60S2\STC12C5204-所有IO推挽输出100HZ方波测试\push-pull-output.uv2
+Project File Date:  02/19/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling push-pull-test.c...
+linking...
+Program Size: data=9.0 xdata=0 code=74
+creating hex file from "push-pull-output"...
+"push-pull-output" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"push-pull-output" - 0 Error(s), 0 Warning(s).

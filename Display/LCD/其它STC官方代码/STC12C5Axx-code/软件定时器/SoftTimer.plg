@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\例程\STC12C5A60S2\软件定时器\SoftTimer.uv2
+Project File Date:  02/28/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling SoftTimer-A.c...
+linking...
+Program Size: data=27.0 xdata=0 code=156
+creating hex file from "SoftTimer"...
+"SoftTimer" - 0 Error(s), 0 Warning(s).

@@ -1,0 +1,3 @@
+".\Out Hex\282838p.obj" 
+TO ".\Out Hex\spi" 
+NOPRINT RAMSIZE(256) 

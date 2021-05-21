@@ -1,0 +1,83 @@
+C51 COMPILER V9.01   MAIN                                                                  06/20/2013 09:10:42 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c LARGE BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include <intrins.h>
+   3          #include <sys\sys.h>
+   4          #include <lcd\lcd.h>
+   5          #include <font\font.h>
+   6          /* 
+   7          程序默认IO连接方式：
+   8          sbit LCD_CS     =P0^0;     //片选       
+   9          sbit LCD_AO     =P0^2;    //数据/命令切换
+  10          sbit LCD_SDA    =P1^5;    //数据
+  11          sbit LCD_SCK    =P1^7;    //时钟
+  12          sbit LCD_REST   =P0^1;    //复位  
+  13          */ 
+  14          void xianshi()//显示信息
+  15          {   
+  16   1              BACK_COLOR=WHITE;
+  17   1              POINT_COLOR=RED;        
+  18   1              showhanzi(10,0,0);  //晶
+  19   1              showhanzi(45,0,1);  //耀
+  20   1          LCD_ShowString(10,30,"2.2 inch TFT 240*320");
+  21   1      }
+  22          void showimage() //显示40*40图片
+  23          {
+  24   1              int i,j,k;
+  25   1              xianshi(); //显示信息
+  26   1              for(k=2;k<4;k++)
+  27   1              {
+  28   2                      for(j=0;j<3;j++)
+  29   2                      {       
+  30   3                              Address_set(40*j,40*k,40*j+39,40*k+39);         //坐标设置
+  31   3                          for(i=0;i<1600;i++)
+  32   3                               {                              
+  33   4                                       LCD_WR_DATA8(image[i*2+1]);     //发送颜色数据
+  34   4                                       LCD_WR_DATA8(image[i*2]);                                      
+  35   4                               }      
+  36   3                       }
+  37   2              }
+  38   1                      
+  39   1      }
+  40          main()
+  41          { 
+  42   1              Lcd_Init();   //tft初始化
+  43   1              LCD_Clear(WHITE); //清屏
+  44   1              BACK_COLOR=BLACK;;POINT_COLOR=WHITE; 
+  45   1          showimage(); //显示40*40图片
+  46   1      
+  47   1              while(1)
+  48   1              {
+  49   2               
+  50   2      //      Lcd_Init();   //tft初始化
+  51   2      //      LCD_Clear(WHITE); //清屏
+  52   2      //      BACK_COLOR=BLACK;;POINT_COLOR=WHITE; 
+  53   2       //  showimage(); //显示40*40图片
+  54   2      //      delayms(2000);
+  55   2          }
+C51 COMPILER V9.01   MAIN                                                                  06/20/2013 09:10:42 PAGE 2   
+
+  56   1      
+  57   1      
+  58   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    349    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----       6
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

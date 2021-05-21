@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\例程\STC12C5A60S2\STC12C5A60S2-串口1测试(Timer1波特率)\UART0_app.uv2
+Project File Date:  01/11/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling UART0_app.c...
+linking...
+Program Size: data=11.1 xdata=128 code=175
+creating hex file from "UART0_app"...
+"UART0_app" - 0 Error(s), 0 Warning(s).

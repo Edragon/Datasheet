@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\例程\STC12C5A60S2\P44-P45-P46-应用例子\P44-P45-P46.uv2
+Project File Date:  04/09/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling P44-P45-P46.c...
+linking...
+Program Size: data=9.0 xdata=0 code=64
+creating hex file from "P44-P45-P46"...
+"P44-P45-P46" - 0 Error(s), 0 Warning(s).

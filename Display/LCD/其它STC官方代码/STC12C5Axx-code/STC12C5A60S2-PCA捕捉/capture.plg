@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>µVision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\Àý³Ì\STC12C5A60S2\STC12C5A60S2-PCA²¶×½\capture.uv2
+Project File Date:  02/25/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling PCA_Capture.c...
+linking...
+Program Size: data=20.2 xdata=0 code=538
+creating hex file from "capture"...
+"capture" - 0 Error(s), 0 Warning(s).

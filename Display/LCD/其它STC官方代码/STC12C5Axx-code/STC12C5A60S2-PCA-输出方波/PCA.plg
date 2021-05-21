@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>µVision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\Àý³Ì\STC12C5A60S2\STC12C5A60S2-PCA-Êä³ö·½²¨\PCA.uv2
+Project File Date:  02/23/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling STC12C5A60S2-PCA.c...
+linking...
+Program Size: data=13.0 xdata=0 code=127
+creating hex file from "PCA"...
+"PCA" - 0 Error(s), 0 Warning(s).

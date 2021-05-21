@@ -1,0 +1,207 @@
+C51 COMPILER V9.00   DS1302                                                                07/16/2013 11:37:41 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN DS1302.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE DS1302.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "DS1302.h"
+   2          #include<intrins.h>
+   3          
+   4          //定义变量
+   5          
+   6          SYSTEMTIME DS1302Buffer;
+   7          bit Flag_Time_Refresh = 1;
+   8          
+   9          //****************************************************
+  10          //实时时钟写入一字节(内部函数)
+  11          //****************************************************
+  12          void DS1302_InputByte(unsigned char dat)        
+  13          { 
+  14   1          unsigned char i;
+  15   1          for(i=0; i<8; i++)
+  16   1          {
+  17   2              DS1302_IO = dat & 0x01;   
+  18   2                      
+  19   2                      DS1302_CLK = 0;                         //上升沿写入数据
+  20   2                      _nop_();
+  21   2                      _nop_();        
+  22   2              
+  23   2              DS1302_CLK = 1;
+  24   2                      _nop_();
+  25   2                      _nop_();
+  26   2              dat >>= 1; 
+  27   2          } 
+  28   1      }
+  29          
+  30          //****************************************************
+  31          //实时时钟读取一字节(内部函数)
+  32          //****************************************************
+  33          unsigned char DS1302_OutputByte(void)   
+  34          { 
+  35   1          unsigned char i;
+  36   1              unsigned char dat;
+  37   1          for(i=0; i<8; i++)
+  38   1          {
+  39   2                      DS1302_CLK = 1;                             //下降沿读出数据
+  40   2                      _nop_();
+  41   2                      _nop_();
+  42   2              DS1302_CLK = 0;
+  43   2                      _nop_();
+  44   2                      _nop_();
+  45   2              dat >>= 1;                              
+  46   2              if( DS1302_IO == 1 )
+  47   2                              dat |= 0x80;                            //最高位置一
+  48   2                      else
+  49   2                              dat &= 0x7F;                            //最高位清零       
+  50   2          } 
+  51   1          return(dat); 
+  52   1      }
+  53          
+  54          //****************************************************
+  55          //ucAddr: DS1302地址, ucData: 要写的数据
+C51 COMPILER V9.00   DS1302                                                                07/16/2013 11:37:41 PAGE 2   
+
+  56          //****************************************************
+  57          void DS1302_Write(unsigned char ucAddr, unsigned char ucDa)     
+  58          {
+  59   1          DS1302_RST = 0;
+  60   1              _nop_();
+  61   1          DS1302_CLK = 0;
+  62   1              _nop_();
+  63   1          DS1302_RST = 1;
+  64   1              _nop_();
+  65   1          DS1302_InputByte(ucAddr);           // 地址，命令 
+  66   1          DS1302_InputByte(ucDa);                     // 写1Byte数据
+  67   1          DS1302_CLK = 1;
+  68   1              _nop_();
+  69   1          DS1302_RST = 0;
+  70   1              _nop_();
+  71   1      }
+  72          
+  73          //****************************************************
+  74          //读取DS1302某地址的数据
+  75          //****************************************************
+  76          unsigned char DS1302_Read(unsigned char ucAddr) 
+  77          {
+  78   1          unsigned char ucData;
+  79   1          DS1302_RST = 0;
+  80   1              _nop_();
+  81   1          DS1302_CLK = 0;
+  82   1              _nop_();
+  83   1          DS1302_RST = 1;
+  84   1              _nop_();
+  85   1          DS1302_InputByte(ucAddr|0x01);        // 地址，命令 
+  86   1          ucData = DS1302_OutputByte();         // 读1Byte数据
+  87   1          DS1302_CLK = 1;
+  88   1              _nop_();
+  89   1          DS1302_RST = 0;
+  90   1              _nop_();
+  91   1          return(ucData);
+  92   1      }
+  93          
+  94          //****************************************************
+  95          //是否写保护
+  96          //****************************************************
+  97          void DS1302_SetProtect(unsigned char flag)       
+  98          {
+  99   1              if(flag)
+ 100   1                      DS1302_Write(0x8E,0x10);                        //保护
+ 101   1              else
+ 102   1                      DS1302_Write(0x8E,0x00);                        //不保护
+ 103   1      } 
+ 104          
+ 105          //****************************************************
+ 106          // 设置时间函数
+ 107          //****************************************************
+ 108          void DS1302_SetTime(unsigned char Address, unsigned char Value)        
+ 109          {
+ 110   1              DS1302_SetProtect(0);
+ 111   1              DS1302_Write(Address, ((Value/10)<<4 | (Value%10))); 
+ 112   1      }
+ 113          
+ 114          //****************************************************
+ 115          //获取实时时间
+ 116          //****************************************************
+ 117          void DS1302_GetTime(SYSTEMTIME *Time)
+C51 COMPILER V9.00   DS1302                                                                07/16/2013 11:37:41 PAGE 3   
+
+ 118          {
+ 119   1              unsigned char ReadValue;
+ 120   1              ReadValue = DS1302_Read(DS1302_SECOND);
+ 121   1              ReadValue = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);                        //BCD码转换十进制
+ 122   1              if(ReadValue != DS1302Buffer.Second)                                                            //跟上一次状态不同，置位刷新标志位
+ 123   1                      Flag_Time_Refresh = 1;
+ 124   1              Time->Second = ReadValue;
+ 125   1      
+ 126   1              ReadValue = DS1302_Read(DS1302_MINUTE);
+ 127   1              Time->Minute = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);
+ 128   1              ReadValue = DS1302_Read(DS1302_HOUR);
+ 129   1              Time->Hour = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);
+ 130   1              ReadValue = DS1302_Read(DS1302_DAY);
+ 131   1              Time->Day = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);        
+ 132   1              ReadValue = DS1302_Read(DS1302_WEEK);
+ 133   1              Time->Week = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);
+ 134   1              ReadValue = DS1302_Read(DS1302_MONTH);
+ 135   1              Time->Month = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);
+ 136   1              ReadValue = DS1302_Read(DS1302_YEAR);
+ 137   1              Time->Year = ((ReadValue&0x70)>>4)*10 + (ReadValue&0x0F);       
+ 138   1      }
+ 139          
+ 140          //****************************************************
+ 141          //初始化
+ 142          //****************************************************
+ 143          void DS1302_Init(void)
+ 144          {
+ 145   1              unsigned char Second;
+ 146   1              Second = DS1302_Read(DS1302_SECOND);
+ 147   1              if(Second&0x80)           
+ 148   1                      DS1302_SetTime(DS1302_SECOND,Second & 0x7f);    //开启振荡        
+ 149   1      
+ 150   1              
+ 151   1      }
+ 152          ////****************************************************
+ 153          ////DS1302更新数据
+ 154          ////****************************************************
+ 155          //void DS1302_Update(SYSTEMTIME *Time)
+ 156          //{
+ 157          //      DS1302_SetTime( DS1302_YEAR,Time->Year );                                       //设置年
+ 158          //      DS1302_SetTime( DS1302_MONTH,Time->Month );                                     //设置月
+ 159          //      DS1302_SetTime( DS1302_DAY,Time->Day );                                         //设置日
+ 160          //      DS1302_SetTime( DS1302_WEEK,Time->Week );                                       //设置星期
+ 161          //      DS1302_SetTime( DS1302_HOUR,Time->Hour );                                       //设置时
+ 162          //      DS1302_SetTime( DS1302_MINUTE,Time->Minute );                           //设置分
+ 163          //      DS1302_SetTime( DS1302_SECOND,Time->Second );                           //设置秒        
+ 164          //}
+ 165          ////****************************************************
+ 166          ////DS1302振荡器停止
+ 167          ////****************************************************
+ 168          //void DS1302_ON_OFF(bit FLAG_ON_OFF)
+ 169          //{
+ 170          //      unsigned char Second;
+ 171          //      Second = DS1302_Read(DS1302_SECOND);
+ 172          //      if(FLAG_ON_OFF == 0)
+ 173          //              DS1302_Write(DS1302_SECOND,Second | 0x80);                              //关闭振荡
+ 174          //      else
+ 175          //              DS1302_Write(DS1302_SECOND,Second & 0x7f);                              //开启振荡
+ 176          //}
+ 177          
+ 178          
+
+C51 COMPILER V9.00   DS1302                                                                07/16/2013 11:37:41 PAGE 4   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    355    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

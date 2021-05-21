@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"1602.obj" 
+TO "1602" 
+RAMSIZE(256) 

@@ -1,0 +1,86 @@
+C51 COMPILER V9.00   LCD1602                                                               07/16/2013 11:06:26 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN LCD1602.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE LCD1602.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "LCD1602.h"
+   2          
+   3          //****************************************************
+   4          //MS延时函数(12M晶振下测试)
+   5          //****************************************************
+   6          void LCD1602_delay_ms(unsigned int n)
+   7          {
+   8   1              unsigned int  i,j;
+   9   1              for(i=0;i<n;i++)
+  10   1                      for(j=0;j<123;j++);
+  11   1      }
+  12          
+  13          //****************************************************
+  14          //写指令
+  15          //****************************************************
+  16          void LCD1602_write_com(unsigned char com)
+  17          {
+  18   1              LCD1602_RS = 0;
+  19   1              LCD1602_delay_ms(1);
+  20   1              LCD1602_EN = 1;
+  21   1              LCD1602_PORT = com;
+  22   1              LCD1602_delay_ms(1);
+  23   1              LCD1602_EN = 0;
+  24   1      }
+  25          
+  26          //****************************************************
+  27          //写数据
+  28          //****************************************************
+  29          void LCD1602_write_data(unsigned char dat)
+  30          {
+  31   1              LCD1602_RS = 1;
+  32   1              LCD1602_delay_ms(1);    
+  33   1              LCD1602_PORT = dat;
+  34   1              LCD1602_EN = 1;
+  35   1              LCD1602_delay_ms(1);
+  36   1              LCD1602_EN = 0;
+  37   1      }
+  38          
+  39          //****************************************************
+  40          //连续写字符
+  41          //****************************************************
+  42          void LCD1602_write_word(unsigned char *s)
+  43          {
+  44   1              while(*s>0)
+  45   1              {
+  46   2                      LCD1602_write_data(*s);
+  47   2                      s++;
+  48   2              }
+  49   1      }
+  50          
+  51          void Init_LCD1602()
+  52          {
+  53   1              LCD1602_EN = 0;
+  54   1              LCD1602_RW = 0;                                         //设置为写状态
+  55   1              LCD1602_write_com(0x38);                        //显示模式设定
+C51 COMPILER V9.00   LCD1602                                                               07/16/2013 11:06:26 PAGE 2   
+
+  56   1              LCD1602_write_com(0x0c);                        //开关显示、光标有无设置、光标闪烁设置
+  57   1              LCD1602_write_com(0x06);                        //写一个字符后指针加一
+  58   1              LCD1602_write_com(0x01);                        //清屏指令
+  59   1      }
+  60          
+  61          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    136    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,20 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\Administrator\桌面\单片机原理与应用C程序设计光盘\单片机原理及应用多媒体课件（教师用）\项目集\提高项目\项目7-汉字显示器12864应用\程序包\lcd1264.uv2
+Project File Date:  11/07/2010
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling 12864.c...
+linking...
+Program Size: data=21.0 xdata=0 code=1541
+"lcd1264" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling 12864.c...
+linking...
+Program Size: data=21.0 xdata=0 code=1541
+creating hex file from "lcd1264"...
+"lcd1264" - 0 Error(s), 0 Warning(s).

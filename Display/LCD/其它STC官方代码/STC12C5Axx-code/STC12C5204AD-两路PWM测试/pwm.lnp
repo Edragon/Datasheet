@@ -1,0 +1,3 @@
+"pwm.obj" 
+TO "pwm" 
+RAMSIZE(256) 

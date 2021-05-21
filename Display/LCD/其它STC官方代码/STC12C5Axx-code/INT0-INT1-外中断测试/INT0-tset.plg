@@ -1,0 +1,25 @@
+<html>
+<body>
+<pre>
+<h1>µVision2 Build Log</h1>
+<h2>Project:</h2>
+E:\STC\¿˝≥Ã\STC12C5A60S2\INT0-INT1-Õ‚÷–∂œ≤‚ ‘\INT0-tset.uv2
+Project File Date:  03/25/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling INT0_test.c...
+INT0_TEST.C(21): error C202: 'P1': undefined identifier
+INT0_TEST.C(22): error C202: 'P1': undefined identifier
+INT0_TEST.C(28): error C202: 'IT0': undefined identifier
+INT0_TEST.C(29): error C202: 'EX0': undefined identifier
+INT0_TEST.C(33): error C202: 'EA': undefined identifier
+INT0_TEST.C(44): error C202: 'P10': undefined identifier
+INT0_TEST.C(49): error C202: 'P11': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling INT0_test.c...
+linking...
+Program Size: data=9.0 xdata=0 code=35
+creating hex file from "INT0-tset"...
+"INT0-tset" - 0 Error(s), 0 Warning(s).

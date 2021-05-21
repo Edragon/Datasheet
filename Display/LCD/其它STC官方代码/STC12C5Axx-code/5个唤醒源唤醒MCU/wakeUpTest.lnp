@@ -1,0 +1,3 @@
+"wakeup-demo.obj" 
+TO "wakeUpTest" 
+RAMSIZE(256) 

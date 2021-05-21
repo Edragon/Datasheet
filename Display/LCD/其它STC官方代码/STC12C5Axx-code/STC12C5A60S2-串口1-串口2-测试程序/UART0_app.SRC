@@ -1,0 +1,514 @@
+; .\UART0_app.SRC generated from: UART0_app.c
+; COMPILER INVOKED BY:
+;        C:\keil51\C51\BIN\C51.EXE UART0_app.c BROWSE DEBUG OBJECTEXTEND SRC(.\UART0_app.SRC)
+
+$NOMOD51
+
+NAME	UART0_APP
+
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+EA	BIT	0A8H.7
+IE	DATA	0A8H
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+PS	BIT	0B8H.4
+SP	DATA	081H
+OV	BIT	0D0H.2
+WR	BIT	0B0H.6
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+IE2	DATA	0AFH
+AUXR	DATA	08EH
+B	DATA	0F0H
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+TF1	BIT	088H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+S2BUF	DATA	09BH
+REN	BIT	098H.4
+S2CON	DATA	09AH
+BRT	DATA	09CH
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+?PR?main?UART0_APP   SEGMENT CODE 
+?PR?uart0_init?UART0_APP                 SEGMENT CODE 
+?PR?UART0_RCV?UART0_APP                  SEGMENT CODE 
+?PR?uart2_init?UART0_APP                 SEGMENT CODE 
+?PR?UART2_RCV?UART0_APP                  SEGMENT CODE 
+?XD?UART0_APP        SEGMENT XDATA 
+?DT?UART0_APP        SEGMENT DATA 
+?BI?UART0_APP        SEGMENT BIT 
+	EXTRN	CODE (?C_STARTUP)
+	PUBLIC	B_TI2
+	PUBLIC	B_TI
+	PUBLIC	uart2_wr
+	PUBLIC	uart0_wr
+	PUBLIC	uart2_rd
+	PUBLIC	uart0_rd
+	PUBLIC	RX2_Buffer
+	PUBLIC	RX0_Buffer
+	PUBLIC	UART2_RCV
+	PUBLIC	uart2_init
+	PUBLIC	UART0_RCV
+	PUBLIC	uart0_init
+	PUBLIC	main
+
+	RSEG  ?XD?UART0_APP
+     RX0_Buffer:   DS   128
+     RX2_Buffer:   DS   128
+
+	RSEG  ?DT?UART0_APP
+       uart0_rd:   DS   1
+       uart2_rd:   DS   1
+       uart0_wr:   DS   1
+       uart2_wr:   DS   1
+
+	RSEG  ?BI?UART0_APP
+           B_TI:   DBIT   1
+          B_TI2:   DBIT   1
+; 
+; /*------------------------------------------------------------------*/
+; /* --- STC MCU International Limited -------------------------------*/
+; /* --- STC 1T Series MCU RC Demo -----------------------------------*/
+; /* --- Mobile: (86)13922805190 -------------------------------------*/
+; /* --- Fax: 86-755-82944243 ----------------------------------------*/
+; /* --- Tel: 86-755-82948412 ----------------------------------------*/
+; /* --- Web: www.STCMCU.com -----------------------------------------*/
+; /* If you want to use the program or the program referenced in the  */
+; /* article, please specify in which data and procedures from STC    */
+; /*------------------------------------------------------------------*/
+; 
+; /*
+; 	测试方法：
+; 	根据您的主时钟和波特率修改下面的相关定义，编译后下载到MCU。
+; 	通过串口助手向MCU发送数据，MCU收到后原样返回。
+; */
+; 
+; #include	<reg51.h>
+; 
+; sfr	AUXR = 0x8E;
+; sfr S2CON = 0x9A;	//12C5A60S2双串口系列
+; sfr S2BUF = 0x9B;	//12C5A60S2双串口系列
+; sfr IE2   = 0xAF;	//STC12C5A60S2系列
+; sfr BRT   = 0x9C;
+; 
+; #define		BUF_LENTH	128		//定义串口接收缓冲长度
+; unsigned char 	uart0_wr;		//写指针
+; unsigned char 	uart0_rd;		//读指针
+; unsigned char 	xdata RX0_Buffer[BUF_LENTH];
+; bit		B_TI;
+; 
+; unsigned char 	uart2_wr;		//写指针
+; unsigned char 	uart2_rd;		//读指针
+; unsigned char 	xdata RX2_Buffer[BUF_LENTH];
+; bit		B_TI2;
+; 
+; 
+; 
+; /*************** 用户定义参数 *****************************/
+; 
+; //#define MAIN_Fosc		22118400L	//define main clock
+; //#define MAIN_Fosc		11059200L	//define main clock
+; #define MAIN_Fosc		18432000L	//define main clock
+; #define Baudrate0		9600		//define the baudrate,
+; 									//12T mode: 600~115200 for 22.1184MHZ, 300~57600 for 11.0592MHZ
+; 
+; #define Baudrate2		19200		//define the baudrate2,
+; 									//12T mode: 600~115200 for 22.1184MHZ, 300~57600 for 11.0592MHZ
+; 
+; /**********************************************************/
+; 
+; 
+; /****************** 编译器自动生成，用户请勿修改 ************************************/
+; 
+; #define T1_TimerReload	(256 - MAIN_Fosc / 192 / Baudrate0)			//Calculate the timer1 reload value	at 12T mode
+; #define BRT_Reload		(256 - MAIN_Fosc / 12 / 16 / Baudrate2)		//Calculate BRT reload value
+; 
+; #define	TimeOut1		(28800 / (unsigned long)Baudrate0 + 2)
+; #define	TimeOut2		(28800 / (unsigned long)Baudrate2 + 2)
+; 
+; #define	TI2				(S2CON & 0x02) != 0
+; #define	RI2				(S2CON & 0x01) != 0
+; #define	CLR_TI2()		S2CON &= ~0x02
+; #define	CLR_RI2()		S2CON &= ~0x01
+; 
+; /**********************************************************/
+; 
+; /******************** 本地函数声明 ***************/
+; void	uart0_init(void);
+; void	uart2_init(void);
+; 
+; 
+; 
+; void	main(void)
+
+	RSEG  ?PR?main?UART0_APP
+main:
+	USING	0
+			; SOURCE LINE # 75
+; {
+			; SOURCE LINE # 76
+; 	uart0_init();
+			; SOURCE LINE # 77
+	LCALL	uart0_init
+; 	uart2_init();
+			; SOURCE LINE # 78
+	LCALL	uart2_init
+?C0001:
+; 	
+; 	while(1)
+			; SOURCE LINE # 80
+; 	{
+			; SOURCE LINE # 81
+; 		if(uart0_rd != uart0_wr)	//串口0转发
+			; SOURCE LINE # 82
+	MOV  	A,uart0_rd
+	XRL  	A,uart0_wr
+	JZ   	?C0003
+; 		{
+			; SOURCE LINE # 83
+; 			B_TI = 0;
+			; SOURCE LINE # 84
+	CLR  	B_TI
+; 			SBUF = RX0_Buffer[uart0_rd];
+			; SOURCE LINE # 85
+	MOV  	A,#LOW (RX0_Buffer)
+	ADD  	A,uart0_rd
+	MOV  	DPL,A
+	CLR  	A
+	ADDC 	A,#HIGH (RX0_Buffer)
+	MOV  	DPH,A
+	MOVX 	A,@DPTR
+	MOV  	SBUF,A
+?C0004:
+; 			while(!B_TI)	;
+			; SOURCE LINE # 86
+	JNB  	B_TI,?C0004
+?C0005:
+; 			B_TI = 0;
+			; SOURCE LINE # 87
+	CLR  	B_TI
+; 			if(++uart0_rd >= BUF_LENTH)		uart0_rd = 0;
+			; SOURCE LINE # 88
+	INC  	uart0_rd
+	MOV  	A,uart0_rd
+	CLR  	C
+	SUBB 	A,#080H
+	JC   	?C0003
+	CLR  	A
+	MOV  	uart0_rd,A
+; 		}
+			; SOURCE LINE # 89
+?C0003:
+; 
+; 		if(uart2_rd != uart2_wr)	//串口2转发
+			; SOURCE LINE # 91
+	MOV  	A,uart2_rd
+	XRL  	A,uart2_wr
+	JZ   	?C0001
+; 		{
+			; SOURCE LINE # 92
+; 			B_TI2 = 0;
+			; SOURCE LINE # 93
+	CLR  	B_TI2
+; 			S2BUF = RX2_Buffer[uart2_rd];
+			; SOURCE LINE # 94
+	MOV  	A,#LOW (RX2_Buffer)
+	ADD  	A,uart2_rd
+	MOV  	DPL,A
+	CLR  	A
+	ADDC 	A,#HIGH (RX2_Buffer)
+	MOV  	DPH,A
+	MOVX 	A,@DPTR
+	MOV  	S2BUF,A
+?C0008:
+; 			while(!B_TI2)	;
+			; SOURCE LINE # 95
+	JNB  	B_TI2,?C0008
+?C0009:
+; 			B_TI2 = 0;
+			; SOURCE LINE # 96
+	CLR  	B_TI2
+; 			if(++uart2_rd >= BUF_LENTH)		uart2_rd = 0;
+			; SOURCE LINE # 97
+	INC  	uart2_rd
+	MOV  	A,uart2_rd
+	CLR  	C
+	SUBB 	A,#080H
+	JC   	?C0001
+	CLR  	A
+	MOV  	uart2_rd,A
+; 		}
+			; SOURCE LINE # 98
+; 	}
+			; SOURCE LINE # 99
+	SJMP 	?C0001
+; END OF main
+
+; }
+; 
+; 
+; 
+; void	uart0_init(void)
+
+	RSEG  ?PR?uart0_init?UART0_APP
+uart0_init:
+			; SOURCE LINE # 104
+; {
+			; SOURCE LINE # 105
+; 	PCON |= 0x80;		//UART0 Double Rate Enable
+			; SOURCE LINE # 106
+	ORL  	PCON,#080H
+; 	SCON = 0x50;		//UART0 set as 10bit , UART0 RX enable
+			; SOURCE LINE # 107
+	MOV  	SCON,#050H
+; 	TMOD &= ~(1<<6);		//Timer1 Set as Timer, 12T
+			; SOURCE LINE # 108
+	ANL  	TMOD,#0BFH
+; 	TMOD = (TMOD & ~0x30) | 0x20;	//Timer1 set as 8 bits auto relaod
+			; SOURCE LINE # 109
+	MOV  	A,TMOD
+	ANL  	A,#0CFH
+	ORL  	A,#020H
+	MOV  	TMOD,A
+; 	TH1 = T1_TimerReload;		//Load the timer
+			; SOURCE LINE # 110
+	MOV  	TH1,#0F6H
+; 	TR1  = 1;
+			; SOURCE LINE # 111
+	SETB 	TR1
+; 	ES  = 1;
+			; SOURCE LINE # 112
+	SETB 	ES
+; 	EA = 1;
+			; SOURCE LINE # 113
+	SETB 	EA
+; }
+			; SOURCE LINE # 114
+	RET  	
+; END OF uart0_init
+
+CSEG	AT	00023H
+	LJMP	UART0_RCV
+
+; 
+; 
+; /**********************************************/
+; void UART0_RCV (void) interrupt 4
+
+	RSEG  ?PR?UART0_RCV?UART0_APP
+	USING	0
+UART0_RCV:
+	PUSH 	ACC
+	PUSH 	DPH
+	PUSH 	DPL
+	PUSH 	PSW
+			; SOURCE LINE # 118
+; {
+; 	if(RI)
+			; SOURCE LINE # 120
+	JNB  	RI,?C0013
+; 	{
+			; SOURCE LINE # 121
+; 		RI = 0;
+			; SOURCE LINE # 122
+	CLR  	RI
+; 		RX0_Buffer[uart0_wr] = SBUF;
+			; SOURCE LINE # 123
+	MOV  	A,#LOW (RX0_Buffer)
+	ADD  	A,uart0_wr
+	MOV  	DPL,A
+	CLR  	A
+	ADDC 	A,#HIGH (RX0_Buffer)
+	MOV  	DPH,A
+	MOV  	A,SBUF
+	MOVX 	@DPTR,A
+; 		if(++uart0_wr >= BUF_LENTH)	uart0_wr = 0;
+			; SOURCE LINE # 124
+	INC  	uart0_wr
+	MOV  	A,uart0_wr
+	CLR  	C
+	SUBB 	A,#080H
+	JC   	?C0013
+	MOV  	uart0_wr,#00H
+; 	}
+			; SOURCE LINE # 125
+?C0013:
+; 
+; 	if(TI)
+			; SOURCE LINE # 127
+	JNB  	TI,?C0016
+; 	{
+			; SOURCE LINE # 128
+; 		TI = 0;
+			; SOURCE LINE # 129
+	CLR  	TI
+; 		B_TI = 1;
+			; SOURCE LINE # 130
+	SETB 	B_TI
+; 	}
+			; SOURCE LINE # 131
+; }
+			; SOURCE LINE # 132
+?C0016:
+	POP  	PSW
+	POP  	DPL
+	POP  	DPH
+	POP  	ACC
+	RETI 	
+; END OF UART0_RCV
+
+; 
+; 
+; /**********************************************/
+; void	uart2_init(void)
+
+	RSEG  ?PR?uart2_init?UART0_APP
+uart2_init:
+			; SOURCE LINE # 136
+; {
+			; SOURCE LINE # 137
+; 	AUXR |=  (1 << 3);		//串口2波特率加倍
+			; SOURCE LINE # 138
+	ORL  	AUXR,#08H
+; 	S2CON  = (S2CON & 0x3f) | (1<<6);	//串口2模式1，8位UART，(2^S2SMOD / 32) * BRT溢出率
+			; SOURCE LINE # 139
+	MOV  	A,S2CON
+	ANL  	A,#03FH
+	ORL  	A,#040H
+	MOV  	S2CON,A
+; 	S2CON |= 1 << 4;		//允许串2接收
+			; SOURCE LINE # 140
+	ORL  	S2CON,#010H
+; 
+; 	AUXR |=  1 << 4;	//baudrate use BRT
+			; SOURCE LINE # 142
+	ORL  	AUXR,#010H
+; 	BRT = BRT_Reload;
+			; SOURCE LINE # 143
+	MOV  	BRT,#0FBH
+; 
+; 	IE2 |=  1;			//允许串口2中断
+			; SOURCE LINE # 145
+	ORL  	IE2,#01H
+; }
+			; SOURCE LINE # 146
+	RET  	
+; END OF uart2_init
+
+CSEG	AT	00043H
+	LJMP	UART2_RCV
+
+; 
+; /**********************************************/
+; void UART2_RCV (void) interrupt 8
+
+	RSEG  ?PR?UART2_RCV?UART0_APP
+	USING	0
+UART2_RCV:
+	PUSH 	ACC
+	PUSH 	DPH
+	PUSH 	DPL
+	PUSH 	PSW
+			; SOURCE LINE # 149
+; {
+; 	if(RI2)
+			; SOURCE LINE # 151
+	MOV  	A,S2CON
+	JNB  	ACC.0,?C0018
+; 	{
+			; SOURCE LINE # 152
+; 		CLR_RI2();
+			; SOURCE LINE # 153
+	ANL  	S2CON,#0FEH
+; 		RX2_Buffer[uart2_wr] = S2BUF;
+			; SOURCE LINE # 154
+	MOV  	A,#LOW (RX2_Buffer)
+	ADD  	A,uart2_wr
+	MOV  	DPL,A
+	CLR  	A
+	ADDC 	A,#HIGH (RX2_Buffer)
+	MOV  	DPH,A
+	MOV  	A,S2BUF
+	MOVX 	@DPTR,A
+; 		if(++uart2_wr >= BUF_LENTH)	uart2_wr = 0;
+			; SOURCE LINE # 155
+	INC  	uart2_wr
+	MOV  	A,uart2_wr
+	CLR  	C
+	SUBB 	A,#080H
+	JC   	?C0018
+	MOV  	uart2_wr,#00H
+; 	}
+			; SOURCE LINE # 156
+?C0018:
+; 
+; 	if(TI2)
+			; SOURCE LINE # 158
+	MOV  	A,S2CON
+	JNB  	ACC.1,?C0021
+; 	{
+			; SOURCE LINE # 159
+; 		CLR_TI2();
+			; SOURCE LINE # 160
+	ANL  	S2CON,#0FDH
+; 		B_TI2 = 1;
+			; SOURCE LINE # 161
+	SETB 	B_TI2
+; 	}
+			; SOURCE LINE # 162
+; }
+			; SOURCE LINE # 163
+?C0021:
+	POP  	PSW
+	POP  	DPL
+	POP  	DPH
+	POP  	ACC
+	RETI 	
+; END OF UART2_RCV
+
+	END

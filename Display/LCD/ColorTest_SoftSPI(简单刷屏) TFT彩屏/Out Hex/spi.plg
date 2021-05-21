@@ -1,0 +1,17 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\yong\Desktop\YYROBOT_1.44TFT V2.0\C51Àý³Ì\ColorTest_SoftSPI(¼òµ¥Ë¢ÆÁ) TFT²ÊÆÁ\Mode.uvproj
+Project File Date:  11/11/2015
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling 282838p.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SOFTWARERESET?282838P
+Program Size: data=20.0 xdata=0 code=711
+creating hex file from ".\Out Hex\spi"...
+".\Out Hex\spi" - 0 Error(s), 1 Warning(s).

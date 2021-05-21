@@ -1,0 +1,3 @@
+"Timer0.obj" 
+TO "timer0" 
+RAMSIZE(256) 

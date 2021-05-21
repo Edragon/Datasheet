@@ -1,0 +1,165 @@
+C51 COMPILER V9.00   DS18B20                                                               07/16/2013 11:37:41 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN DS18B20.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE DS18B20.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "DS18B20.h"
+   2          #include<intrins.h>
+   3          
+   4          //定义变量
+   5          unsigned char flag_temper = 0;
+   6          
+   7          //****************************************************
+   8          //DS18B20延时函数
+   9          //****************************************************
+  10          void DS18B20_Delay( unsigned int n )
+  11          {
+  12   1              unsigned int i;
+  13   1              for(i = 0 ; i < n ; i++ );
+  14   1      }
+  15          //****************************************************
+  16          //DS18B20写1字节
+  17          //****************************************************
+  18          void DS18B20_Write_Byte( unsigned char dat)
+  19          {
+  20   1              unsigned char i;
+  21   1              for( i = 0 ; i < 8 ; i++ )
+  22   1              {
+  23   2                      DS18B20_DQ = 0;
+  24   2                      _nop_();                        //延时>1us
+  25   2                      _nop_();
+  26   2                      
+  27   2                      DS18B20_DQ = dat&0x01;          //先写低位
+  28   2                      dat >>= 1;
+  29   2      
+  30   2                      DS18B20_Delay(6);       //延时60~120us
+  31   2                      
+  32   2                      DS18B20_DQ = 1;         //释放总线
+  33   2                      _nop_();                        //延时>1us
+  34   2                      _nop_();        
+  35   2              }               
+  36   1      }
+  37          
+  38          //****************************************************
+  39          //DS18B20读1字节
+  40          //****************************************************
+  41          unsigned char DS18B20_Read_Byte( )
+  42          {
+  43   1              unsigned char dat,i;
+  44   1              for( i = 0 ; i < 8 ; i++ )
+  45   1              {
+  46   2                      DS18B20_DQ = 0;
+  47   2                      _nop_();                        //延时>1us
+  48   2                      _nop_();
+  49   2                                      
+  50   2                      DS18B20_DQ = 1;         //释放总线
+  51   2                      _nop_();                        //延时>1us
+  52   2                      _nop_();
+  53   2      
+  54   2                      dat >>= 1;
+  55   2                      if( DS18B20_DQ == 1)
+C51 COMPILER V9.00   DS18B20                                                               07/16/2013 11:37:41 PAGE 2   
+
+  56   2                      {
+  57   3                              dat |= 0X80;
+  58   3                      }
+  59   2                      else
+  60   2                      {
+  61   3                              dat &= 0x7f;
+  62   3                      }
+  63   2      
+  64   2                      DS18B20_Delay(6);       //延时60~120us                  
+  65   2              }
+  66   1              return dat;             
+  67   1      }
+  68          
+  69          //****************************************************
+  70          //DS18B20初始化
+  71          //****************************************************
+  72          bit DS18B20_Init()
+  73          {
+  74   1              bit Flag_exist = 1;
+  75   1              DS18B20_DQ = 1;                 //释放总线
+  76   1              _nop_();                                //延时>1us
+  77   1              _nop_();
+  78   1      
+  79   1              DS18B20_DQ = 0; 
+  80   1              DS18B20_Delay(50);              //延时480~960us 
+  81   1      
+  82   1              DS18B20_DQ = 1;                 //释放总线
+  83   1              DS18B20_Delay(3);               //延时15~60us
+  84   1      
+  85   1              Flag_exist = DS18B20_DQ;
+  86   1              DS18B20_Delay(10);              //延时60~240us
+  87   1      
+  88   1              DS18B20_DQ = 1;                 //释放总线
+  89   1              return Flag_exist;                      
+  90   1      }
+  91          
+  92          //**********************************************************
+  93          //读取温度函数，返回温度的绝对值，并标注flag_temper，flag_temper=1表示负，flag_temper=0表示正
+  94          //**********************************************************
+  95          unsigned int Get_temp(void)         //读取温度值 
+  96          {  
+  97   1              float tt;
+  98   1              unsigned char a,b;
+  99   1              unsigned int temp;
+ 100   1              if( DS18B20_Init() == 0 )                //初始化
+ 101   1              {
+ 102   2                      DS18B20_Write_Byte(0xcc);          //忽略ROM指令
+ 103   2                      DS18B20_Write_Byte(0x44);          //温度转换指令
+ 104   2              
+ 105   2              //      _delay_ms(750);                         //PROTEUS仿真需要加
+ 106   2              
+ 107   2                      if( DS18B20_Init() == 0 )                 //初始化
+ 108   2                      {
+ 109   3                              DS18B20_Write_Byte(0xcc);          //忽略ROM指令
+ 110   3                              DS18B20_Write_Byte(0xbe);          //读暂存器指令
+ 111   3                              a = DS18B20_Read_Byte();           //读取到的第一个字节为温度LSB
+ 112   3                              b = DS18B20_Read_Byte();           //读取到的第一个字节为温度MSB
+ 113   3                              temp = b;                      //先把高八位有效数据赋于temp
+ 114   3                              temp <<= 8;                    //把以上8位数据从temp低八位移到高八位
+ 115   3                              temp = temp|a;                //两字节合成一个整型变量
+ 116   3                              
+ 117   3                              if(temp>0xfff)
+C51 COMPILER V9.00   DS18B20                                                               07/16/2013 11:37:41 PAGE 3   
+
+ 118   3                              {
+ 119   4                                      flag_temper=1;                          //温度为负数
+ 120   4                                      temp=(~temp)+1;
+ 121   4                              }
+ 122   3                              else
+ 123   3                              {                                                                                                                                                          
+ 124   4                                      flag_temper=0;                          //温度为正或者0
+ 125   4                              }
+ 126   3                              
+ 127   3                              tt = temp*0.0625;              //得到真实十进制温度值
+ 128   3                                                              //因为DS18B20可以精确到0.0625度
+ 129   3                                                              //所以读回数据的最低位代表的是0.0625度
+ 130   3                              temp = tt*10+0.5;               //放大十倍
+ 131   3                                                              //这样做的目的将小数点后第一位也转换为可显示数字
+ 132   3                                                          //同时进行一个四舍五入操作。
+ 133   3                      }
+ 134   2              }
+ 135   1              return temp;
+ 136   1      }
+ 137          
+ 138          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    283    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

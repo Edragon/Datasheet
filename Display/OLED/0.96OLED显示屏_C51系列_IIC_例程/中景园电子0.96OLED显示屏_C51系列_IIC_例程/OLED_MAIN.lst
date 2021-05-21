@@ -1,0 +1,76 @@
+C51 COMPILER V9.52.0.0   OLED_MAIN                                                         07/14/2014 23:51:40 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE OLED_MAIN
+OBJECT MODULE PLACED IN OLED_MAIN.obj
+COMPILER INVOKED BY: D:\Keil_C51\C51\BIN\C51.EXE SRC\OLED_MAIN.c BROWSE INCDIR(.\SRC) DEBUG OBJECTEXTEND PRINT(.\OLED_MA
+                    -IN.lst) TABS(2) OBJECT(OLED_MAIN.obj)
+
+line level    source
+
+   1          //////////////////////////////////////////////////////////////////////////////////   
+   2          //本程序只供学习使用，未经作者许可，不得用于其它任何用途
+   3          //中景园电子
+   4          //店铺地址：http://shop73023976.taobao.com/?spm=2013.1.0.0.M4PqC2
+   5          //
+   6          //  文 件 名   : main.c
+   7          //  版 本 号   : v2.0
+   8          //  作    者   : HuangKai
+   9          //  生成日期   : 2014-0101
+  10          //  最近修改   : 
+  11          //  功能描述   : OLED IIC接口演示例程(51系列)
+  12          //              说明: 
+  13          //              ----------------------------------------------------------------
+  14          //              GND    电源地
+  15          //              VCC  接5V或3.3v电源
+  16          //              D0   P1^0（SCL）
+  17          //              D1   P1^1（SDA）
+  18          //              RES  接高
+  19          //              DC   接地
+  20          //              CS   接地                
+  21          //              ----------------------------------------------------------------
+  22          // 修改历史   :
+  23          // 日    期   : 
+  24          // 作    者   : HuangKai
+  25          // 修改内容   : 创建文件
+  26          //版权所有，盗版必究。
+  27          //Copyright(C) 中景园电子2014/3/16
+  28          //All rights reserved
+  29          //******************************************************************************/
+  30          
+  31          #include "reg52.h"
+  32          
+  33          #include "oled.h"
+  34          
+  35          /*******************************Main*******************************/
+  36          void main(void)
+  37          {
+  38   1        Initial_M096128x64_ssd1306();
+  39   1        Delay_1ms(5);
+  40   1        while(1)
+  41   1        {
+  42   2          fill_picture(0xff);//全屏显示
+  43   2          Delay_50ms(25);
+  44   2          fill_picture(0xf0);//半屏熄灭；出现一条一条的亮线
+  45   2          Delay_50ms(25);
+  46   2          Picture();//显示一张图片
+  47   2          Delay_50ms(25);
+  48   2        }
+  49   1      }
+  50          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     46    ----
+C51 COMPILER V9.52.0.0   OLED_MAIN                                                         07/14/2014 23:51:40 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,4 @@
+"STC12C5A60S2_EEPROM.obj",
+"PowerDownSave.obj" 
+TO "PowerDownSave" 
+RAMSIZE(256) 
